@@ -32,10 +32,6 @@ function draw() {
   background(0); // Black background
   let cellSize = gridSize - 2; // Adjust the cell size for padding
 
-  // Draw the green line at the middle of the window
-  stroke(0, 255, 0); // Green color for the line
-  strokeWeight(40); // Line weight
-  line(0, height / 2, width, height / 2);
 
   // Draw the grid in the lower half of the window
   for (let y = 0; y < numRows; y++) {
