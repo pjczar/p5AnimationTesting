@@ -33,6 +33,10 @@ function draw() {
   background(0); // Black background
   let cellSize = gridSize - 2; // Adjust the cell size for padding
 
+  // Draw the green line at the middle of the window
+  stroke(0, 255, 0); // Green color for the line
+  strokeWeight(40); // Line weight
+  line(0, height / 2, width, height / 2);
 
   // Draw the grid in the lower half of the window
   for (let y = 0; y < numRows; y++) {
@@ -84,6 +88,10 @@ function draw() {
           // Set a delay for the character change color effect
           columnsChanging[columnToChange] = false; // Mark the column as not changing
           grid[0][columnToChange] = getRandomCharacter(); // Change the character in the top row
+          // Propagate the character change down the column
+          for (let y = 1; y < numRows; y++) {
+            grid[y][columnToChange] = getRandomCharacter();
+          }
         }, characterChangeDuration);
       }
       characterChangeTimer = characterChangeDelay; // Restart the character change timer
@@ -93,12 +101,11 @@ function draw() {
 
 // Function to get a random alphanumeric character
 function getRandomCharacter() {
-  let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
-  let randomIndex = floor(random(characters.length));
-  return characters.charAt(randomIndex);
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#&!?';
+  return chars.charAt(floor(random(chars.length)));
 }
 
-// Function to get an array of unique random column indices
+// Function to get an array of random column indices
 function getRandomColumns(numColumns) {
   let columns = [];
   while (columns.length < numColumns) {
