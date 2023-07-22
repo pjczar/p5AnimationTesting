@@ -27,8 +27,8 @@ function draw() {
       
       // Apply perspective to vertical lines at the bottom
       if (y === numRows - 1) {
-        x1 -= (numCols/2 - x) * 2;
-        x2 += (numCols/2 - x) * 2;
+        x1 -= (numCols/2 - x) * 5; // Adjust the multiplier for different proportions
+        x2 += (numCols/2 - x) * 5; // Adjust the multiplier for different proportions
       }
       
       // Draw the grid lines
@@ -44,7 +44,7 @@ function draw() {
   }
   
   // Draw a thick line at the middle position above the grid
-  middleLineColor = lerpColor(middleLineColor, color(random(255), random(255), random(255)), 0.02); // Slower color change
+  middleLineColor = lerpColor(middleLineColor, color(random(255), random(255), random(255)), 0.2); // Faster color change
   stroke(middleLineColor); // Randomly change the color of the middle line
   strokeWeight(30); // Thick stroke
   line(0, middleY, width, middleY);
