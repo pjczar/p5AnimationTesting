@@ -34,15 +34,12 @@ function draw() {
       // Fill the cell with bright green
       fill(80, 100, 100);
       
-      // Apply glow effect using blendMode and filter
-      blendMode(ADD); // Additive blend mode for glowing effect
-      filter(BLUR, 5); // Blur filter to create the glow
-      
-      // Draw the cell
+      // Add a slight shadow effect
+      let shadowColor = color(80, 100, 100, 80); // Green with alpha value 80
+      let shadowOffset = 2; // Shadow offset in pixels
+      translate(shadowOffset, shadowOffset); // Translate to create the shadow effect
       rect(x1, y1, cellSize, cellSize);
-      
-      // Reset blendMode
-      blendMode(BLEND);
+      translate(-shadowOffset, -shadowOffset); // Reset translation
       
       // Draw the alphanumeric character in the cell
       fill(0); // Black text color
