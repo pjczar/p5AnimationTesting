@@ -3,48 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bouncing Ball Animation</title>
+  <title>P5.js SVG Animation</title>
   <!-- Include the p5.js library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <!-- Include your p5.js sketch file -->
+  <script src="sketch.js"></script>
 </head>
 <body>
-  <script>
-    let svgImage; // Declare a variable to store the loaded SVG image
-let x, y; // Position of the SVG
-let xSpeed, ySpeed; // Speed of the SVG
-
-function preload() {
-  // Load the SVG file during the preload phase
-  svgImage = loadImage('G.svg');
-}
-
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  x = width / 2; // Starting position at the center horizontally
-  y = height / 2; // Starting position at the center vertically
-  xSpeed = 5; // Horizontal speed
-  ySpeed = 5; // Vertical speed
-}
-
-function draw() {
-  background(255);
-  
-  // Move the SVG
-  x += xSpeed;
-  y += ySpeed;
-
-  // Check for collision with the edges of the canvas
-  if (x <= 0 || x >= width - svgImage.width) {
-    xSpeed *= -1; // Reverse the horizontal direction
-  }
-  if (y <= 0 || y >= height - svgImage.height) {
-    ySpeed *= -1; // Reverse the vertical direction
-  }
-
-  // Draw the loaded SVG image at its current position
-  image(svgImage, x, y);
-}
-
-  </script>
 </body>
 </html>
