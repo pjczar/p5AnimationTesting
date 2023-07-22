@@ -59,7 +59,8 @@ function draw() {
         fill(255, mouseChangeColor);
       } else {
         if (currentTime - cell.changeTime < mouseChangeDelay) {
-          fill(255, 255, 255);
+          let changeColor = map(currentTime - cell.changeTime, 0, mouseChangeDelay, 255, 0);
+          fill(0, 255, 0, changeColor);
         } else {
           fill(0, 255, 0);
         }
