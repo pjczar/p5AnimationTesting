@@ -9,8 +9,8 @@ function preload() {
 }
 
 function setup() {
-  canvasWidth = windowWidth; // Set initial canvas width to match window width
-  canvasHeight = windowHeight; // Set initial canvas height to match window height
+  canvasWidth = windowWidth - 30; // Set initial canvas width to match window width
+  canvasHeight = windowHeight - 30; // Set initial canvas height to match window height
   createCanvas(canvasWidth, canvasHeight);
   
   posX = width / 2; // Initial X position at the center of the canvas
