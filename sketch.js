@@ -1,12 +1,14 @@
 let gridSize = 20; // Size of each grid cell
 let numCols, numRows; // Number of columns and rows in the grid
 let yOffset = 0; // Y offset for the moving grid
-let speed = 2; // Speed of the moving grid
+let speed = -2; // Speed of the moving grid
+let middleLineColor; // Color for the middle line
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   numCols = ceil(width / gridSize) + 1;
   numRows = ceil(height / gridSize / 2) + 1;
+  middleLineColor = color(random(255), random(255), random(255));
 }
 
 function draw() {
@@ -16,9 +18,9 @@ function draw() {
   for (let y = 0; y < numRows; y++) {
     for (let x = 0; x < numCols; x++) {
       let x1 = x * gridSize - gridSize/2;
-      let y1 = y * gridSize - yOffset - gridSize/2 + height/2;
+      let y1 = y * gridSize + yOffset + height/2;
       let x2 = x * gridSize + gridSize/2;
-      let y2 = y * gridSize - yOffset + gridSize/2 + height/2;
+      let y2 = y * gridSize + yOffset + gridSize + height/2;
       
       // Apply perspective to vertical lines at the bottom
       if (y === numRows - 1) {
@@ -40,13 +42,14 @@ function draw() {
   
   // Draw a thick line at the middle position above the grid
   let middleY = height / 2;
-  stroke(255); // White color
+  middleLineColor = color(random(255), random(255), random(255));
+  stroke(middleLineColor); // Randomly change the color of the middle line
   strokeWeight(10); // Thick stroke
   line(0, middleY, width, middleY);
   
   // Calculate the offset for the moving grid
   yOffset += speed;
-  if (yOffset >= gridSize) {
+  if (yOffset <= -gridSize) {
     yOffset = 0;
   }
 }
