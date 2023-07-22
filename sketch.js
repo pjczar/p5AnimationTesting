@@ -1,12 +1,13 @@
 let gridSize = 20; // Size of each grid cell
 let numCols, numRows; // Number of columns and rows in the grid
 let yOffset = 0; // Y offset for the moving grid
-let speed = 0.1; // Speed of the moving grid
+let speed = 0.3; // Speed of the moving grid (increased by a factor of 3)
 let grid = []; // 2D array to store characters in each cell
 let characterChangeDelay = 20; // Delay for character changes
 let characterChangeDuration = 30; // Duration of character change color effect
 let characterChangeTimer = 0; // Timer for character changes
-let columnChanging = []; // Array to keep track of whether a column is changing
+let columnsChanging = []; // Array to keep track of columns currently changing
+let maxColumnsChanging = 7; // Maximum number of columns changing at the same time
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -22,9 +23,9 @@ function setup() {
     }
   }
 
-  // Initialize columnChanging array
+  // Initialize columnsChanging array
   for (let x = 0; x < numCols; x++) {
-    columnChanging[x] = false;
+    columnsChanging[x] = false;
   }
 }
 
@@ -32,6 +33,10 @@ function draw() {
   background(0); // Black background
   let cellSize = gridSize - 2; // Adjust the cell size for padding
 
+  // Draw the green line at the middle of the window
+  stroke(0, 255, 0); // Green color for the line
+  strokeWeight(40); // Line weight
+  line(0, height / 2, width, height / 2);
 
   // Draw the grid in the lower half of the window
   for (let y = 0; y < numRows; y++) {
@@ -43,8 +48,9 @@ function draw() {
       fill(0);
 
       // Draw the alphanumeric character in the cell
-      fill(0, 255, 0); // Green text color
-      if (columnChanging[x]) {
+      let colChanging = columnsChanging[x];
+      fill(0, colChanging ? 255 : 150, 0); // Bright green text color if column is changing
+      if (y === 0 && colChanging) {
         fill(255); // White text color during character change
       }
       textSize(12);
@@ -73,13 +79,16 @@ function draw() {
   if (characterChangeTimer > 0) {
     characterChangeTimer--;
     if (characterChangeTimer === 0) {
-      let columnToChange = floor(random(numCols)); // Select a random column to change
-      columnChanging[columnToChange] = true; // Mark the column as changing
-      setTimeout(() => {
-        // Set a delay for the character change color effect
-        columnChanging[columnToChange] = false; // Mark the column as not changing
-        grid[0][columnToChange] = getRandomCharacter(); // Change the character in the top row
-      }, characterChangeDuration);
+      let columnsToChange = getRandomColumns(maxColumnsChanging);
+      for (let i = 0; i < columnsToChange.length; i++) {
+        let columnToChange = columnsToChange[i];
+        columnsChanging[columnToChange] = true; // Mark the column as changing
+        setTimeout(() => {
+          // Set a delay for the character change color effect
+          columnsChanging[columnToChange] = false; // Mark the column as not changing
+          grid[0][columnToChange] = getRandomCharacter(); // Change the character in the top row
+        }, characterChangeDuration);
+      }
       characterChangeTimer = characterChangeDelay; // Restart the character change timer
     }
   }
@@ -90,4 +99,16 @@ function getRandomCharacter() {
   let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
   let randomIndex = floor(random(characters.length));
   return characters.charAt(randomIndex);
+}
+
+// Function to get an array of unique random column indices
+function getRandomColumns(numColumns) {
+  let columns = [];
+  while (columns.length < numColumns) {
+    let col = floor(random(numCols));
+    if (!columns.includes(col)) {
+      columns.push(col);
+    }
+  }
+  return columns;
 }
