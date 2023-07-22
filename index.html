@@ -9,50 +9,42 @@
 </head>
 <body>
   <script>
-    let x, y; // Ball position
-    let xspeed, yspeed; // Ball speed
-    let diameter = 40; // Ball diameter
+    let svgImage; // Declare a variable to store the loaded SVG image
+let x, y; // Position of the SVG
+let xSpeed, ySpeed; // Speed of the SVG
 
-    function setup() {
-      createCanvas(windowWidth, windowHeight); // Set canvas size to match browser window
-      x = width / 2;
-      y = height / 2;
-      xspeed = random(-5, 5);
-      yspeed = random(-5, 5);
-    }
+function preload() {
+  // Load the SVG file during the preload phase
+  svgImage = loadImage('ball.svg');
+}
 
-    function draw() {
-      background(255);
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  x = width / 2; // Starting position at the center horizontally
+  y = height / 2; // Starting position at the center vertically
+  xSpeed = 5; // Horizontal speed
+  ySpeed = 5; // Vertical speed
+}
 
-      // Move the ball
-      x += xspeed;
-      y += yspeed;
+function draw() {
+  background(255);
+  
+  // Move the SVG
+  x += xSpeed;
+  y += ySpeed;
 
-      // Check for collisions with the walls
-      if (x + diameter / 2 > width || x - diameter / 2 < 0) {
-        xspeed *= -1;
-      }
-      if (y + diameter / 2 > height || y - diameter / 2 < 0) {
-        yspeed *= -1;
-      }
+  // Check for collision with the edges of the canvas
+  if (x <= 0 || x >= width - svgImage.width) {
+    xSpeed *= -1; // Reverse the horizontal direction
+  }
+  if (y <= 0 || y >= height - svgImage.height) {
+    ySpeed *= -1; // Reverse the vertical direction
+  }
 
-      // Draw the ball
-      fill(255, 0, 0);
-      ellipse(x, y, diameter);
+  // Draw the loaded SVG image at its current position
+  image(svgImage, x, y);
+}
 
-      // Create a loop by resetting the position when the ball reaches the center
-      if (x >= width / 2 - 1 && x <= width / 2 + 1 && y >= height / 2 - 1 && y <= height / 2 + 1) {
-        x = width / 2;
-        y = height / 2;
-        xspeed = random(-5, 5);
-        yspeed = random(-5, 5);
-      }
-    }
-
-    // Adjust canvas size when the window is resized
-    function windowResized() {
-      resizeCanvas(windowWidth, windowHeight);
-    }
   </script>
 </body>
 </html>
