@@ -14,7 +14,7 @@
     let diameter = 40; // Ball diameter
 
     function setup() {
-      createCanvas(400, 400);
+      createCanvas(windowWidth, windowHeight); // Set canvas size to match browser window
       x = width / 2;
       y = height / 2;
       xspeed = random(-5, 5);
@@ -47,6 +47,11 @@
         xspeed = random(-5, 5);
         yspeed = random(-5, 5);
       }
+    }
+
+    // Adjust canvas size when the window is resized
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
     }
   </script>
 </body>
