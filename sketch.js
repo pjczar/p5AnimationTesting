@@ -1,22 +1,26 @@
-const numRows = 10; // Number of rows in the grid
-const numCols = 20; // Number of columns in the grid
-const cellSize = 30; // Size of each cell in the grid
+let numRows; // Number of rows in the grid
+let numCols; // Number of columns in the grid
+const cellSize = 14; // Size of each cell in the grid
+const charSize = 12; // Size of the characters within each cell
 const cellSpeed = 0.2; // Speed at which cells move down (adjust as needed)
 
 let grid = []; // 2D array to store characters and positions
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  // Calculate the position for the top-left corner of the grid to be centered at the bottom
-  let gridYOffset = windowHeight * 0.1; // 80% height, adjust as needed
-  let gridXOffset = (windowWidth - numCols * cellSize) / 2;
+  
+  // Calculate the number of rows and columns based on the window size and cell size
+  numRows = floor((windowHeight * 0.8) / cellSize);
+  numCols = floor(windowWidth / cellSize);
+  
+  // Create the grid
   for (let y = 0; y < numRows; y++) {
     grid.push([]);
     for (let x = 0; x < numCols; x++) {
       grid[y].push({
         char: getRandomCharacter(),
-        xPos: gridXOffset + x * cellSize,
-        yPos: gridYOffset + y * cellSize,
+        xPos: x * cellSize,
+        yPos: y * cellSize,
         changeTime: millis() + random(1000, 7000) // Random time for each cell to change
       });
     }
@@ -43,7 +47,7 @@ function draw() {
       }
 
       // Draw cell with character
-      textSize(cellSize);
+      textSize(charSize);
       textAlign(CENTER, CENTER);
       text(cell.char, cell.xPos + cellSize / 2, cell.yPos + cellSize / 2);
     }
@@ -61,7 +65,7 @@ function draw() {
       }
       cell.yPos += cellSpeed;
       // If the row goes below the canvas, reset its position and characters
-      if (cell.yPos > windowHeight + cellSize) {
+      if (cell.yPos > windowHeight) {
         cell.yPos = -cellSize;
         cell.char = getRandomCharacter();
       }
