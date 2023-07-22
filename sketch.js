@@ -3,13 +3,15 @@ let numRows, numCols;
 let cellSize, charSize;
 let cellSpeed;
 let lastTime = 0;
+let mouseRadius = 50;
+let mouseChangeDelay = 500;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   cellSize = 14;
   charSize = 12;
-  cellSpeed = 2;
-  numRows = floor((height * 0.8) / cellSize);
+  cellSpeed = 1.5;
+  numRows = floor((height * 1.2) / cellSize) + 2; // Extend grid beyond window height
   numCols = floor(width / cellSize);
   createGrid();
 }
@@ -21,9 +23,10 @@ function createGrid() {
     for (let x = 0; x < numCols; x++) {
       row.push({
         xPos: x * cellSize,
-        yPos: y * cellSize,
+        yPos: y * cellSize - cellSize * 1.2, // Shift the grid up outside the window
         char: getRandomCharacter(),
         changeTime: 0,
+        isMouseAffected: false,
       });
     }
     grid.push(row);
@@ -31,8 +34,8 @@ function createGrid() {
 }
 
 function getRandomCharacter() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#@&";
-  return chars.charAt(floor(random(chars.length)));
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$&!';
+  return characters.charAt(floor(random(characters.length)));
 }
 
 function draw() {
@@ -45,33 +48,34 @@ function draw() {
       let cell = grid[y][x];
       let d = dist(mouseX, mouseY, cell.xPos + cellSize / 2, cell.yPos + cellSize / 2);
 
-      // Calculate the color based on mouse distance
-      let fromColor = color(255); // White
-      let toColor = color(0, 255, 0); // Green
-      let cellColor = lerpColor(fromColor, toColor, map(d, 0, 60, 0, 1));
-
-      // Change character based on mouse distance
-      if (d < 60) {
-        cell.char = getRandomCharacter();
-        cell.changeTime = currentTime + random(200, 600); // Random change interval
-      }
-
-      // If it's time for the character to change, and it's not due to mouse proximity
-      if (currentTime > cell.changeTime && d >= 60) {
-        cell.char = getRandomCharacter();
-        cell.changeTime = currentTime + random(200, 600); // Random change interval
+      // Character change and mouse color handling
+      if (d < mouseRadius) {
+        if (!cell.isMouseAffected) {
+          cell.char = getRandomCharacter();
+          cell.isMouseAffected = true;
+          cell.changeTime = currentTime;
+        }
+        let mouseChangeColor = map(d, 0, mouseRadius, 255, 0);
+        fill(255, mouseChangeColor);
+      } else {
+        if (currentTime - cell.changeTime < mouseChangeDelay) {
+          fill(255, 255, 255);
+        } else {
+          fill(0, 255, 0);
+        }
       }
 
       // Draw cell with character
       textSize(charSize);
       textAlign(CENTER, CENTER);
-      fill(cellColor);
+      rect(cell.xPos, cell.yPos, cellSize, cellSize);
+      fill(0);
       text(cell.char, cell.xPos + cellSize / 2, cell.yPos + cellSize / 2);
     }
   }
 
   // Move rows down and handle row creation at the top
-  if (currentTime - lastTime >= 1000) {
+  if (currentTime - lastTime >= 1000 / cellSpeed) {
     lastTime = currentTime;
     for (let y = numRows - 1; y >= 0; y--) {
       if (y > 0) {
@@ -81,13 +85,21 @@ function draw() {
         for (let x = 0; x < numCols; x++) {
           row.push({
             xPos: x * cellSize,
-            yPos: -cellSize,
+            yPos: -cellSize, // New rows generated outside the window
             char: getRandomCharacter(),
             changeTime: 0,
+            isMouseAffected: false,
           });
         }
         grid[0] = row;
       }
     }
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  numRows = floor((height * 1.2) / cellSize) + 2;
+  numCols = floor(width / cellSize);
+  createGrid();
 }
