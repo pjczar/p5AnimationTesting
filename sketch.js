@@ -1,29 +1,27 @@
-let numRows; // Number of rows in the grid
-let numCols; // Number of columns in the grid
-const cellSize = 14; // Size of each cell in the grid
-const charSize = 12; // Size of the characters within each cell
-const cellSpeed = 0.2; // Speed at which cells move down (adjust as needed)
-
-let grid = []; // 2D array to store characters and positions
+let numRows, numCols;
+let cellSize, charSize;
+let grid = [];
+let cellSpeed = 0.1;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  
-  // Calculate the number of rows and columns based on the window size and cell size
-  numRows = floor((windowHeight * 0.8) / cellSize);
-  numCols = floor(windowWidth / cellSize);
-  
-  // Create the grid
+  numRows = floor(windowHeight / 14); // Number of rows based on window height
+  numCols = floor(windowWidth / 14); // Number of columns based on window width
+  cellSize = 14;
+  charSize = 12;
+
+  // Create grid and initialize characters
   for (let y = 0; y < numRows; y++) {
-    grid.push([]);
+    let row = [];
     for (let x = 0; x < numCols; x++) {
-      grid[y].push({
+      row.push({
         char: getRandomCharacter(),
         xPos: x * cellSize,
         yPos: y * cellSize,
-        changeTime: millis() + random(1000, 7000) // Random time for each cell to change
+        changeTime: 0,
       });
     }
+    grid.push(row);
   }
 }
 
@@ -40,9 +38,9 @@ function draw() {
       // Change character and fill color based on mouse distance
       if (d < 60) {
         cell.char = getRandomCharacter();
-        fill(255, 0, 0, map(d, 0, 60, 255, 0)); // Fade to white as distance decreases
+        fill(255, map(d, 0, 60, 255, 0)); // Fade to white as distance decreases
       } else {
-        fill(0, 255, 0);
+        fill(0, 255, 0); // Bright green
       }
 
       // Draw cell with character
@@ -59,7 +57,7 @@ function draw() {
     for (let x = 0; x < numCols; x++) {
       let cell = row[x];
       if (currentTime > cell.changeTime) {
-        cell.changeTime = currentTime + random(1000, 7000); // Reset change time
+        cell.changeTime = currentTime + random(100, 500); // Reset change time
         cell.char = getRandomCharacter();
       }
       cell.yPos += cellSpeed;
@@ -72,9 +70,28 @@ function draw() {
   }
 }
 
-
-// Function to get a random character
 function getRandomCharacter() {
-  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#&';
-  return chars.charAt(floor(random(chars.length)));
+  let characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()';
+  return characters.charAt(floor(random(characters.length)));
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  numRows = floor(windowHeight / 14);
+  numCols = floor(windowWidth / 14);
+
+  // Reset grid and initialize characters
+  grid = [];
+  for (let y = 0; y < numRows; y++) {
+    let row = [];
+    for (let x = 0; x < numCols; x++) {
+      row.push({
+        char: getRandomCharacter(),
+        xPos: x * cellSize,
+        yPos: y * cellSize,
+        changeTime: 0,
+      });
+    }
+    grid.push(row);
+  }
 }
