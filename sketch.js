@@ -64,47 +64,40 @@ function initiateCharacterChanges() {
 }
 
 function draw() {
-  background(0); // Black background
-  let cellSize = gridSize - 2; // Adjust the cell size for padding
+  background(0, 200, 0); // Set the background to bright green
+  noStroke();
 
-  // Draw the grid in the window
+  // Calculate the size of each cell based on the canvas dimensions and number of rows/columns
+  let cellWidth = width / numCols;
+  let cellHeight = height / numRows;
+
+  // Draw the grid cells
   for (let y = 0; y < numRows; y++) {
     for (let x = 0; x < numCols; x++) {
-      let x1 = x * gridSize - gridSize / 2;
-      let y1 = y * gridSize + yOffset + (height * 0.2) / 2; // Start the grid at 20% of the window height
-
-      // Fill the cell with black
-      fill(0);
-
-      // Draw the alphanumeric character in the cell
-      let colChanging = columnsChanging[x];
-      if (y === 0 && colChanging) {
-        fill(255); // White text color during character change
-      } else {
-        fill(0, colChanging ? 255 : 150, 0); // Bright green text color if column is changing
+      // Set the color for the cell (bright green)
+      let cellColor = color(0, 255, 0);
+      // If the cell is currently changing its character, make it white
+      if (columnsChanging[x] && y === 0) {
+        cellColor = color(255);
       }
-      textSize(12);
+      fill(cellColor);
+      // Draw the cell rectangle
+      rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+      // Draw the character in the cell
+      fill(0, 255, 0); // Set the character color to bright green
+      textSize(24);
       textAlign(CENTER, CENTER);
-      text(grid[y][x], x1 + cellSize / 2, y1 + cellSize / 2);
+      text(grid[y][x], x * cellWidth + cellWidth / 2, y * cellHeight + cellHeight / 2);
     }
   }
 
-  // Calculate the offset for the moving grid
-  yOffset += speed;
-  if (yOffset >= gridSize) {
-    yOffset = 0;
-    // Shift the characters in the grid when a new line appears at the top
-    for (let y = numRows - 1; y > 0; y--) {
-      grid[y] = grid[y - 1].slice();
-    }
-    // Generate a new line of characters at the top
-    grid[0] = [];
-    for (let x = 0; x < numCols; x++) {
-      grid[0][x] = getRandomCharacter();
-    }
-    characterChangeTimer = characterChangeDelay; // Start the character change timer
+  // Only initiate character changes in the top row after a certain time interval
+  if (millis() - lastCharacterChangeTime >= characterChangeInterval) {
+    initiateCharacterChanges();
+    lastCharacterChangeTime = millis();
   }
 }
+
 
 // Function to get a random alphanumeric character
 function getRandomCharacter() {
