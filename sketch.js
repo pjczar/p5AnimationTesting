@@ -1,12 +1,12 @@
 let numRows, numCols;
 let cellSize, charSize;
 let grid = [];
-let cellSpeed = 0.1;
+let cellSpeed = 0.2; // Doubled the speed
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  numRows = floor(windowHeight / 14); // Number of rows based on window height
-  numCols = floor(windowWidth / 14); // Number of columns based on window width
+  numRows = floor(windowHeight / 14);
+  numCols = floor(windowWidth / 14);
   cellSize = 14;
   charSize = 12;
 
@@ -35,17 +35,20 @@ function draw() {
       let cell = grid[y][x];
       let d = dist(mouseX, mouseY, cell.xPos + cellSize / 2, cell.yPos + cellSize / 2);
 
-      // Change character and fill color based on mouse distance
+      // Calculate the color based on mouse distance
+      let fromColor = color(0, 255, 0); // Green
+      let toColor = color(255); // White
+      let cellColor = lerpColor(fromColor, toColor, map(d, 0, 60, 0, 1));
+
+      // Change character based on mouse distance
       if (d < 60) {
         cell.char = getRandomCharacter();
-        fill(255, map(d, 0, 60, 255, 0)); // Fade to white as distance decreases
-      } else {
-        fill(0, 255, 0); // Bright green
       }
 
       // Draw cell with character
       textSize(charSize);
       textAlign(CENTER, CENTER);
+      fill(cellColor); // Apply the calculated color
       text(cell.char, cell.xPos + cellSize / 2, cell.yPos + cellSize / 2);
     }
   }
@@ -69,6 +72,7 @@ function draw() {
     }
   }
 }
+
 
 function getRandomCharacter() {
   let characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()';
