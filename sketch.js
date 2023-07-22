@@ -1,7 +1,7 @@
 let gridSize = 20; // Size of each grid cell
 let numCols, numRows; // Number of columns and rows in the grid
 let yOffset = 0; // Y offset for the moving grid
-let speed = 0.3; // Speed of the moving grid (increased by a factor of 3)
+let speed = 0.9; // Speed of the moving grid (increased by a factor of 3)
 let grid = []; // 2D array to store characters in each cell
 let characterChangeDelay = 20; // Delay for character changes
 let characterChangeDuration = 30; // Duration of character change color effect
@@ -33,7 +33,6 @@ function draw() {
   background(0); // Black background
   let cellSize = gridSize - 2; // Adjust the cell size for padding
 
- 
 
   // Draw the grid in the lower half of the window
   for (let y = 0; y < numRows; y++) {
@@ -46,9 +45,10 @@ function draw() {
 
       // Draw the alphanumeric character in the cell
       let colChanging = columnsChanging[x];
-      fill(0, colChanging ? 255 : 150, 0); // Bright green text color if column is changing
       if (y === 0 && colChanging) {
         fill(255); // White text color during character change
+      } else {
+        fill(0, colChanging ? 255 : 150, 0); // Bright green text color if column is changing
       }
       textSize(12);
       textAlign(CENTER, CENTER);
