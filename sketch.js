@@ -1,7 +1,7 @@
 let gridSize = 20; // Size of each grid cell
 let numCols, numRows; // Number of columns and rows in the grid
 let yOffset = 0; // Y offset for the moving grid
-let speed = -2; // Speed of the moving grid
+let speed = 0.5; // Speed of the moving grid
 let middleLineColor; // Color for the middle line
 
 function setup() {
@@ -14,13 +14,16 @@ function setup() {
 function draw() {
   background(0); // Black background
   
+  // Calculate the position of the middle line
+  let middleY = height / 2;
+  
   // Draw the grid in the lower half of the window
   for (let y = 0; y < numRows; y++) {
     for (let x = 0; x < numCols; x++) {
       let x1 = x * gridSize - gridSize/2;
-      let y1 = y * gridSize + yOffset + height/2;
+      let y1 = y * gridSize + yOffset + middleY;
       let x2 = x * gridSize + gridSize/2;
-      let y2 = y * gridSize + yOffset + gridSize + height/2;
+      let y2 = y * gridSize + yOffset + gridSize + middleY;
       
       // Apply perspective to vertical lines at the bottom
       if (y === numRows - 1) {
@@ -41,7 +44,6 @@ function draw() {
   }
   
   // Draw a thick line at the middle position above the grid
-  let middleY = height / 2;
   middleLineColor = color(random(255), random(255), random(255));
   stroke(middleLineColor); // Randomly change the color of the middle line
   strokeWeight(10); // Thick stroke
@@ -49,7 +51,7 @@ function draw() {
   
   // Calculate the offset for the moving grid
   yOffset += speed;
-  if (yOffset <= -gridSize) {
+  if (yOffset >= gridSize) {
     yOffset = 0;
   }
 }
