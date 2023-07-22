@@ -27,6 +27,38 @@ function setup() {
   for (let x = 0; x < numCols; x++) {
     columnsChanging[x] = false;
   }
+
+  // Set an interval to initiate character changes in the top row every 1 second
+  setInterval(initiateCharacterChanges, 1000);
+}
+
+function initiateCharacterChanges() {
+  // Choose a random number of columns to change (between 3 and 7)
+  let numColumnsToChange = floor(random(3, 8));
+
+  // Choose random columns in the top row to change
+  let columnsToChange = [];
+  while (columnsToChange.length < numColumnsToChange) {
+    let col = floor(random(numCols));
+    if (!columnsToChange.includes(col)) {
+      columnsToChange.push(col);
+    }
+  }
+
+  // Initiate character changes in the chosen columns
+  for (let i = 0; i < columnsToChange.length; i++) {
+    let columnToChange = columnsToChange[i];
+    columnsChanging[columnToChange] = true; // Mark the column as changing
+    setTimeout(() => {
+      // Set a delay for the character change color effect
+      columnsChanging[columnToChange] = false; // Mark the column as not changing
+      grid[0][columnToChange] = getRandomCharacter(); // Change the character in the top row
+      // Propagate the character change down the column
+      for (let y = 1; y < numRows; y++) {
+        grid[y][columnToChange] = getRandomCharacter();
+      }
+    }, characterChangeDuration);
+  }
 }
 
 function draw() {
@@ -69,28 +101,6 @@ function draw() {
       grid[0][x] = getRandomCharacter();
     }
     characterChangeTimer = characterChangeDelay; // Start the character change timer
-
-    // Chain reaction of character changes (initiated from the top row)
-    if (characterChangeTimer > 0) {
-      characterChangeTimer--;
-      if (characterChangeTimer === 0) {
-        let columnsToChange = getRandomColumns(maxColumnsChanging);
-        for (let i = 0; i < columnsToChange.length; i++) {
-          let columnToChange = columnsToChange[i];
-          columnsChanging[columnToChange] = true; // Mark the column as changing
-          setTimeout(() => {
-            // Set a delay for the character change color effect
-            columnsChanging[columnToChange] = false; // Mark the column as not changing
-            grid[0][columnToChange] = getRandomCharacter(); // Change the character in the top row
-            // Propagate the character change down the column
-            for (let y = 1; y < numRows; y++) {
-              grid[y][columnToChange] = getRandomCharacter();
-            }
-          }, characterChangeDuration);
-        }
-        characterChangeTimer = characterChangeDelay; // Restart the character change timer
-      }
-    }
   }
 }
 
@@ -98,16 +108,4 @@ function draw() {
 function getRandomCharacter() {
   let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#&!?';
   return chars.charAt(floor(random(chars.length)));
-}
-
-// Function to get an array of random column indices
-function getRandomColumns(numColumns) {
-  let columns = [];
-  while (columns.length < numColumns) {
-    let col = floor(random(numCols));
-    if (!columns.includes(col)) {
-      columns.push(col);
-    }
-  }
-  return columns;
 }
