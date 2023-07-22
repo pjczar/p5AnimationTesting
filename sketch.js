@@ -1,113 +1,76 @@
-let numRows, numCols;
-let cellSize = 30;
-let grid = [];
-let columnsChanging = [];
-let changeInterval = 1000; // Time interval (in milliseconds) for changing a column
+const numRows = 10; // Number of rows in the grid
+const numCols = 20; // Number of columns in the grid
+const cellSize = 30; // Size of each cell in the grid
+const cellSpeed = 0.2; // Speed at which cells move down (adjust as needed)
+
+let grid = []; // 2D array to store characters and positions
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  
-  // Calculate the number of rows to fill the lower 80% of the window
-  numRows = floor((height * 0.8) / cellSize);
-  numCols = floor(width / cellSize);
-
-  // Initialize the grid with random characters
+  // Calculate the position for the top-left corner of the grid to be centered at the bottom
+  let gridYOffset = windowHeight * 0.1; // 80% height, adjust as needed
+  let gridXOffset = (windowWidth - numCols * cellSize) / 2;
   for (let y = 0; y < numRows; y++) {
     grid.push([]);
     for (let x = 0; x < numCols; x++) {
       grid[y].push({
         char: getRandomCharacter(),
-        yPos: -y * cellSize // Start above the top of the canvas
+        xPos: gridXOffset + x * cellSize,
+        yPos: gridYOffset + y * cellSize,
+        changeTime: millis() + random(1000, 7000) // Random time for each cell to change
       });
     }
   }
-
-  // Initialize the columnsChanging array
-  for (let i = 0; i < numCols; i++) {
-    columnsChanging.push(false);
-  }
 }
-
 
 function draw() {
-  background(0); // Set the background to black
-  noStroke();
+  // Background
+  background(0);
 
-  // Draw the grid cells
+  // Draw grid characters and handle character changes
   for (let y = 0; y < numRows; y++) {
     for (let x = 0; x < numCols; x++) {
-      // Set the color for the cell (black)
-      let cellColor = color(0);
-      // If the entire column is currently changing characters, make it white
-      if (columnsChanging[x]) {
-        cellColor = color(255);
-      }
-      fill(cellColor);
-      // Draw the cell rectangle
-      rect(x * cellSize, y * cellSize, cellSize, cellSize);
-      // Draw the character in the cell
       let cell = grid[y][x];
-      let textColor = color(0, 255, 0); // Set the character color to green
-      if (columnsChanging[x] || dist(mouseX, mouseY, x * cellSize + cellSize / 2, y * cellSize + cellSize / 2) < 60) {
-        // If the column is changing or the mouse is within 60 pixels, set the text color to white
-        textColor = color(255);
+      let d = dist(mouseX, mouseY, cell.xPos + cellSize / 2, cell.yPos + cellSize / 2);
+
+      // Change character and fill color based on mouse distance
+      if (d < 60) {
+        cell.char = 'W';
+        fill(255, 255, 255, map(d, 0, 60, 255, 100)); // Fade to white as distance decreases
+      } else {
+        cell.char = 'G';
+        fill(0, 255, 0);
       }
-      fill(textColor);
-      textSize(24);
+
+      // Draw cell with character
+      textSize(cellSize);
       textAlign(CENTER, CENTER);
-      text(cell.char, x * cellSize + cellSize / 2, cell.yPos + cellSize / 2);
-
-      // Move the character down
-      cell.yPos += 1;
-      // If the character goes off the screen, reset it to the top
-      if (cell.yPos > height) {
-        cell.yPos = -cellSize;
-      }
+      text(cell.char, cell.xPos + cellSize / 2, cell.yPos + cellSize / 2);
     }
   }
-}
 
-function initiateColumnChange() {
-  // Choose a random number of columns to change (between 2 and 7)
-  let numColumnsToChange = floor(random(2, 8));
-
-  // Choose random columns to change
-  for (let i = 0; i < numColumnsToChange; i++) {
-    let colToChange = floor(random(numCols));
-    columnsChanging[colToChange] = true;
-    setTimeout(() => {
-      columnsChanging[colToChange] = false;
-    }, changeInterval);
-  }
-}
-
-function mouseMoved() {
-  // Change the color of characters in a radius around the mouse cursor
-  let mouseGridX = floor(mouseX / cellSize);
-  let mouseGridY = floor(mouseY / cellSize);
-
+  // Move rows down and handle row creation at the top
+  let currentTime = millis();
   for (let y = 0; y < numRows; y++) {
+    let row = grid[y];
     for (let x = 0; x < numCols; x++) {
-      let distance = dist(mouseX, mouseY, x * cellSize + cellSize / 2, y * cellSize + cellSize / 2);
-      // Calculate the new color based on the distance from the mouse cursor
-      let textColor = color(0, 255, 0); // Set the character color to green
-      if (columnsChanging[x] || distance < 60) {
-        // If the column is changing or the mouse is within 60 pixels, set the text color to white
-        textColor = color(255);
+      let cell = row[x];
+      if (currentTime > cell.changeTime) {
+        cell.changeTime = currentTime + random(1000, 7000); // Reset change time
+        cell.char = getRandomCharacter();
       }
-      fill(textColor);
-      text(grid[y][x].char, x * cellSize + cellSize / 2, grid[y][x].yPos + cellSize / 2);
+      cell.yPos += cellSpeed;
+      // If the row goes below the canvas, reset its position and characters
+      if (cell.yPos > windowHeight + cellSize) {
+        cell.yPos = -cellSize;
+        cell.char = getRandomCharacter();
+      }
     }
   }
 }
 
+// Function to get a random character
 function getRandomCharacter() {
-  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#&!@';
-  return characters[floor(random(characters.length))];
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  numRows = floor(height / cellSize);
-  numCols = floor(width / cellSize);
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#&';
+  return chars.charAt(floor(random(chars.length)));
 }
