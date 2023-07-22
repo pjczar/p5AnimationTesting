@@ -53,9 +53,11 @@ function initiateCharacterChanges() {
       // Set a delay for the character change color effect
       columnsChanging[columnToChange] = false; // Mark the column as not changing
       grid[0][columnToChange] = getRandomCharacter(); // Change the character in the top row
-      // Propagate the character change down the column
+      // Propagate the character change down the column with random delays
       for (let y = 1; y < numRows; y++) {
-        grid[y][columnToChange] = getRandomCharacter();
+        setTimeout(() => {
+          grid[y][columnToChange] = getRandomCharacter();
+        }, random(100, 500)); // Random delay between 0.1 and 0.5 seconds
       }
     }, characterChangeDuration);
   }
