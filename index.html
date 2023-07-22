@@ -3,12 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P5.js SVG Animation</title>
+  <title>Bouncing Ball Animation</title>
   <!-- Include the p5.js library -->
-  <script src="p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
 <body>
-  <!-- Add the canvas element where the p5.js sketch will be drawn -->
-  <script src="sketch.js"></script>
+  <script>
+    let x, y; // Ball position
+    let xspeed, yspeed; // Ball speed
+    let diameter = 40; // Ball diameter
+
+    function setup() {
+      createCanvas(400, 400);
+      x = width / 2;
+      y = height / 2;
+      xspeed = random(-5, 5);
+      yspeed = random(-5, 5);
+    }
+
+    function draw() {
+      background(255);
+
+      // Move the ball
+      x += xspeed;
+      y += yspeed;
+
+      // Check for collisions with the walls
+      if (x + diameter / 2 > width || x - diameter / 2 < 0) {
+        xspeed *= -1;
+      }
+      if (y + diameter / 2 > height || y - diameter / 2 < 0) {
+        yspeed *= -1;
+      }
+
+      // Draw the ball
+      fill(255, 0, 0);
+      ellipse(x, y, diameter);
+
+      // Create a loop by resetting the position when the ball reaches the center
+      if (x >= width / 2 - 1 && x <= width / 2 + 1 && y >= height / 2 - 1 && y <= height / 2 + 1) {
+        x = width / 2;
+        y = height / 2;
+        xspeed = random(-5, 5);
+        yspeed = random(-5, 5);
+      }
+    }
+  </script>
 </body>
 </html>
