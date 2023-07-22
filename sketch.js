@@ -6,7 +6,9 @@ let changeInterval = 1000; // Time interval (in milliseconds) for changing a col
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  numRows = floor(height / cellSize);
+  
+  // Calculate the number of rows to fill the lower 80% of the window
+  numRows = floor((height * 0.8) / cellSize);
   numCols = floor(width / cellSize);
 
   // Initialize the grid with random characters
@@ -25,6 +27,7 @@ function setup() {
     columnsChanging.push(false);
   }
 }
+
 
 function draw() {
   background(0); // Set the background to black
