@@ -39,10 +39,9 @@ function draw() {
 
       // Change character and fill color based on mouse distance
       if (d < 60) {
-        cell.char = 'W';
-        fill(255, 255, 255, map(d, 0, 60, 255, 100)); // Fade to white as distance decreases
+        cell.char = getRandomCharacter();
+        fill(255, 0, 0, map(d, 0, 60, 255, 0)); // Fade to white as distance decreases
       } else {
-        cell.char = 'G';
         fill(0, 255, 0);
       }
 
@@ -72,6 +71,7 @@ function draw() {
     }
   }
 }
+
 
 // Function to get a random character
 function getRandomCharacter() {
