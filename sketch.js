@@ -1,7 +1,7 @@
 let gridSize = 20; // Size of each grid cell
 let numCols, numRows; // Number of columns and rows in the grid
 let yOffset = 0; // Y offset for the moving grid
-let speed = 0.5; // Speed of the moving grid
+let speed = 0.2; // Speed of the moving grid
 let middleLineColor; // Color for the middle line
 
 function setup() {
@@ -44,9 +44,9 @@ function draw() {
   }
   
   // Draw a thick line at the middle position above the grid
-  middleLineColor = color(random(255), random(255), random(255));
+  middleLineColor = lerpColor(middleLineColor, color(random(255), random(255), random(255)), 0.02); // Slower color change
   stroke(middleLineColor); // Randomly change the color of the middle line
-  strokeWeight(10); // Thick stroke
+  strokeWeight(30); // Thick stroke
   line(0, middleY, width, middleY);
   
   // Calculate the offset for the moving grid
