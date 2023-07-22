@@ -6,7 +6,7 @@ let speed = 5; // Speed of the moving grid
 function setup() {
   createCanvas(windowWidth, windowHeight);
   numCols = ceil(width / gridSize) + 1;
-  numRows = ceil(height / gridSize) + 1;
+  numRows = ceil(height / gridSize / 2) + 1;
 }
 
 function draw() {
@@ -18,13 +18,13 @@ function draw() {
     yOffset = 0;
   }
   
-  // Draw the grid
+  // Draw the grid in the lower half of the window
   for (let y = 0; y < numRows; y++) {
     for (let x = 0; x < numCols; x++) {
       let x1 = x * gridSize - gridSize/2;
-      let y1 = y * gridSize - yOffset - gridSize/2;
+      let y1 = y * gridSize - yOffset - gridSize/2 + height/2;
       let x2 = x * gridSize + gridSize/2;
-      let y2 = y * gridSize - yOffset + gridSize/2;
+      let y2 = y * gridSize - yOffset + gridSize/2 + height/2;
       
       // Apply perspective to vertical lines at the bottom
       if (y === numRows - 1) {
