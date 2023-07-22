@@ -1,46 +1,45 @@
-let svgImage; // Declare a variable to store the loaded SVG image
-let canvasWidth, canvasHeight;
-let posX, posY;
-let speedX, speedY;
-
-function preload() {
-  // Load the SVG file during the preload phase
-  svgImage = loadImage('G.svg');
-}
+let gridSize = 20; // Size of each grid cell
+let numCols, numRows; // Number of columns and rows in the grid
+let yOffset = 0; // Y offset for the moving grid
+let speed = 5; // Speed of the moving grid
 
 function setup() {
-  canvasWidth = windowWidth - 30; // Set initial canvas width to match window width
-  canvasHeight = windowHeight - 30; // Set initial canvas height to match window height
-  createCanvas(canvasWidth, canvasHeight);
-  
-  posX = width / 2; // Initial X position at the center of the canvas
-  posY = height / 2; // Initial Y position at the center of the canvas
-  speedX = random(-20, 20); // Random initial horizontal speed
-  speedY = random(-20, 20); // Random initial vertical speed
+  createCanvas(windowWidth, windowHeight);
+  numCols = ceil(width / gridSize) + 1;
+  numRows = ceil(height / gridSize) + 1;
 }
 
 function draw() {
-  background(255);
+  background(0); // Black background
   
-  // Update canvas size every tick to match window size
-  if (canvasWidth !== windowWidth || canvasHeight !== windowHeight) {
-    canvasWidth = windowWidth;
-    canvasHeight = windowHeight;
-    resizeCanvas(canvasWidth, canvasHeight);
+  // Calculate the offset for the moving grid
+  yOffset += speed;
+  if (yOffset >= gridSize) {
+    yOffset = 0;
   }
   
-  // Move the ball
-  posX += speedX;
-  posY += speedY;
-  
-  // Bounce the ball when it reaches the canvas edges
-  if (posX <= 0 || posX >= width) {
-    speedX *= -1;
+  // Draw the grid
+  for (let y = 0; y < numRows; y++) {
+    for (let x = 0; x < numCols; x++) {
+      let x1 = x * gridSize - gridSize/2;
+      let y1 = y * gridSize - yOffset - gridSize/2;
+      let x2 = x * gridSize + gridSize/2;
+      let y2 = y * gridSize - yOffset + gridSize/2;
+      
+      // Apply perspective to vertical lines at the bottom
+      if (y === numRows - 1) {
+        x1 -= (numCols/2 - x) * 2;
+        x2 += (numCols/2 - x) * 2;
+      }
+      
+      // Draw the grid cell
+      let color1 = color(random(255), random(255), random(255));
+      let color2 = color(random(255), random(255), random(255));
+      let inter = map(y, 0, numRows - 1, 0, 1);
+      let c = lerpColor(color1, color2, inter);
+      stroke(c);
+      fill(c);
+      rect(x1, y1, x2 - x1, y2 - y1);
+    }
   }
-  if (posY <= 0 || posY >= height) {
-    speedY *= -1;
-  }
-  
-  // Draw the loaded SVG image at the position of the bouncing ball
-  image(svgImage, posX - svgImage.width / 2, posY - svgImage.height / 2);
 }
