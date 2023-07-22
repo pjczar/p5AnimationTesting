@@ -41,8 +41,7 @@ function getRandomCharacter() {
 function draw() {
   background(0);
 
-  // Draw grid characters and handle character changes
-  let currentTime = millis();
+  // Draw grid cells
   for (let y = 0; y < numRows; y++) {
     for (let x = 0; x < numCols; x++) {
       let cell = grid[y][x];
@@ -53,31 +52,33 @@ function draw() {
         if (!cell.isMouseAffected) {
           cell.char = getRandomCharacter();
           cell.isMouseAffected = true;
-          cell.changeTime = currentTime;
+          cell.changeTime = millis();
         }
         let mouseChangeColor = map(d, 0, mouseRadius, 255, 0);
         fill(255, mouseChangeColor);
       } else {
-        if (currentTime - cell.changeTime < mouseChangeDelay) {
-          let changeColor = map(currentTime - cell.changeTime, 0, mouseChangeDelay, 255, 0);
+        if (millis() - cell.changeTime < mouseChangeDelay) {
+          let changeColor = map(millis() - cell.changeTime, 0, mouseChangeDelay, 255, 0);
           fill(0, 255, 0, changeColor);
         } else {
           fill(0, 255, 0);
         }
       }
 
-      // Draw cell with character
+      // Draw black cell
+      rect(cell.xPos, cell.yPos, cellSize, cellSize);
+      
+      // Draw green or white character
+      fill(255);
       textSize(charSize);
       textAlign(CENTER, CENTER);
-      rect(cell.xPos, cell.yPos, cellSize, cellSize);
-      fill(0);
       text(cell.char, cell.xPos + cellSize / 2, cell.yPos + cellSize / 2);
     }
   }
 
   // Move rows down and handle row creation at the top
-  if (currentTime - lastTime >= 1000 / cellSpeed) {
-    lastTime = currentTime;
+  if (millis() - lastTime >= 1000 / cellSpeed) {
+    lastTime = millis();
     for (let y = numRows - 1; y >= 0; y--) {
       if (y > 0) {
         grid[y] = grid[y - 1];
