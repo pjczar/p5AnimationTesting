@@ -32,13 +32,13 @@ function draw() {
         x2 += (numCols/2 - x) * 2;
       }
       
-      // Draw the grid cell
+      // Draw the grid lines
       let color1 = color(random(255), random(255), random(255));
       let color2 = color(random(255), random(255), random(255));
       let inter = map(y, 0, numRows - 1, 0, 1);
       let c = lerpColor(color1, color2, inter);
       stroke(c);
-      fill(c);
+      noFill();
       rect(x1, y1, x2 - x1, y2 - y1);
     }
   }
