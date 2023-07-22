@@ -2,7 +2,7 @@ let svgImage; // Declare a variable to store the loaded SVG image
 
 function preload() {
   // Load the SVG file during the preload phase
-  svgImage = loadImage('./images/racecar1.svg');
+  svgImage = loadImage('images/racecar1.svg');
 }
 
 function setup() {
