@@ -3,7 +3,7 @@ let numCols, numRows; // Number of columns and rows in the grid
 let yOffset = 0; // Y offset for the moving grid
 let speed = 0.9; // Speed of the moving grid (increased by a factor of 3)
 let grid = []; // 2D array to store characters in each cell
-let characterChangeDelay = 20; // Delay for character changes
+let characterChangeDelay = 30; // Delay for character changes (0.5 seconds)
 let characterChangeDuration = 30; // Duration of character change color effect
 let characterChangeTimer = 0; // Timer for character changes
 let columnsChanging = []; // Array to keep track of columns currently changing
@@ -12,7 +12,7 @@ let maxColumnsChanging = 7; // Maximum number of columns changing at the same ti
 function setup() {
   createCanvas(windowWidth, windowHeight);
   numCols = ceil(width / gridSize) + 1;
-  numRows = ceil(height / gridSize / 2) + 1;
+  numRows = ceil(height / gridSize * 0.8) + 1; // Extend the grid to 80% of the window height
   colorMode(RGB, 255); // Use RGB color mode
 
   // Initialize the grid with random characters
@@ -33,13 +33,11 @@ function draw() {
   background(0); // Black background
   let cellSize = gridSize - 2; // Adjust the cell size for padding
 
-
-
-  // Draw the grid in the lower half of the window
+  // Draw the grid in the window
   for (let y = 0; y < numRows; y++) {
     for (let x = 0; x < numCols; x++) {
       let x1 = x * gridSize - gridSize / 2;
-      let y1 = y * gridSize + yOffset + height / 2;
+      let y1 = y * gridSize + yOffset + (height * 0.2) / 2; // Start the grid at 20% of the window height
 
       // Fill the cell with black
       fill(0);
