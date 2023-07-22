@@ -13,7 +13,10 @@ function setup() {
   for (let y = 0; y < numRows; y++) {
     grid.push([]);
     for (let x = 0; x < numCols; x++) {
-      grid[y].push(getRandomCharacter());
+      grid[y].push({
+        char: getRandomCharacter(),
+        yPos: -y * cellSize // Start above the top of the canvas
+      });
     }
   }
 
@@ -40,6 +43,7 @@ function draw() {
       // Draw the cell rectangle
       rect(x * cellSize, y * cellSize, cellSize, cellSize);
       // Draw the character in the cell
+      let cell = grid[y][x];
       let textColor = color(0, 255, 0); // Set the character color to green
       if (columnsChanging[x] || dist(mouseX, mouseY, x * cellSize + cellSize / 2, y * cellSize + cellSize / 2) < 60) {
         // If the column is changing or the mouse is within 60 pixels, set the text color to white
@@ -48,21 +52,30 @@ function draw() {
       fill(textColor);
       textSize(24);
       textAlign(CENTER, CENTER);
-      text(grid[y][x], x * cellSize + cellSize / 2, y * cellSize + cellSize / 2);
+      text(cell.char, x * cellSize + cellSize / 2, cell.yPos + cellSize / 2);
+
+      // Move the character down
+      cell.yPos += 1;
+      // If the character goes off the screen, reset it to the top
+      if (cell.yPos > height) {
+        cell.yPos = -cellSize;
+      }
     }
   }
 }
 
 function initiateColumnChange() {
-  // Choose a random column index to change
-  let colToChange = floor(random(numCols));
-  // Set the flag for the chosen column to true
-  columnsChanging[colToChange] = true;
+  // Choose a random number of columns to change (between 2 and 7)
+  let numColumnsToChange = floor(random(2, 8));
 
-  // Set a timer to revert the column back to normal after the changeInterval
-  setTimeout(() => {
-    columnsChanging[colToChange] = false;
-  }, changeInterval);
+  // Choose random columns to change
+  for (let i = 0; i < numColumnsToChange; i++) {
+    let colToChange = floor(random(numCols));
+    columnsChanging[colToChange] = true;
+    setTimeout(() => {
+      columnsChanging[colToChange] = false;
+    }, changeInterval);
+  }
 }
 
 function mouseMoved() {
@@ -80,7 +93,7 @@ function mouseMoved() {
         textColor = color(255);
       }
       fill(textColor);
-      text(grid[y][x], x * cellSize + cellSize / 2, y * cellSize + cellSize / 2);
+      text(grid[y][x].char, x * cellSize + cellSize / 2, grid[y][x].yPos + cellSize / 2);
     }
   }
 }
