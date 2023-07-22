@@ -6,6 +6,7 @@ let grid = []; // 2D array to store characters in each cell
 let characterChangeDelay = 20; // Delay for character changes
 let characterChangeDuration = 30; // Duration of character change color effect
 let characterChangeTimer = 0; // Timer for character changes
+let columnChanging = []; // Array to keep track of whether a column is changing
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -20,11 +21,21 @@ function setup() {
       grid[y][x] = getRandomCharacter();
     }
   }
+
+  // Initialize columnChanging array
+  for (let x = 0; x < numCols; x++) {
+    columnChanging[x] = false;
+  }
 }
 
 function draw() {
   background(0); // Black background
   let cellSize = gridSize - 2; // Adjust the cell size for padding
+
+  // Draw the green line at the middle of the window
+  stroke(0, 255, 0); // Green color for the line
+  strokeWeight(40); // Line weight
+  line(0, height / 2, width, height / 2);
 
   // Draw the grid in the lower half of the window
   for (let y = 0; y < numRows; y++) {
@@ -37,6 +48,9 @@ function draw() {
 
       // Draw the alphanumeric character in the cell
       fill(0, 255, 0); // Green text color
+      if (columnChanging[x]) {
+        fill(255); // White text color during character change
+      }
       textSize(12);
       textAlign(CENTER, CENTER);
       text(grid[y][x], x1 + cellSize / 2, y1 + cellSize / 2);
@@ -63,14 +77,14 @@ function draw() {
   if (characterChangeTimer > 0) {
     characterChangeTimer--;
     if (characterChangeTimer === 0) {
-      for (let y = 1; y < numRows; y++) {
-        for (let x = 0; x < numCols; x++) {
-          if (random() < 0.2) { // Random chance for character change
-            grid[y][x] = getRandomCharacter();
-          }
-        }
-      }
-      characterChangeTimer = characterChangeDuration; // Restart the character change timer
+      let columnToChange = floor(random(numCols)); // Select a random column to change
+      columnChanging[columnToChange] = true; // Mark the column as changing
+      setTimeout(() => {
+        // Set a delay for the character change color effect
+        columnChanging[columnToChange] = false; // Mark the column as not changing
+        grid[0][columnToChange] = getRandomCharacter(); // Change the character in the top row
+      }, characterChangeDuration);
+      characterChangeTimer = characterChangeDelay; // Restart the character change timer
     }
   }
 }
