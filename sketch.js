@@ -1,7 +1,7 @@
 let gridSize = 20; // Size of each grid cell
 let numCols, numRows; // Number of columns and rows in the grid
 let yOffset = 0; // Y offset for the moving grid
-let speed = 5; // Speed of the moving grid
+let speed = 2; // Speed of the moving grid
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -11,6 +11,12 @@ function setup() {
 
 function draw() {
   background(0); // Black background
+  
+  // Draw a thick line at the middle position above the grid
+  let middleY = height / 2;
+  stroke(255); // White color
+  strokeWeight(10); // Thick stroke
+  line(0, middleY, width, middleY);
   
   // Calculate the offset for the moving grid
   yOffset += speed;
