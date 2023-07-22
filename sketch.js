@@ -15,8 +15,8 @@ function setup() {
   
   posX = width / 2; // Initial X position at the center of the canvas
   posY = height / 2; // Initial Y position at the center of the canvas
-  speedX = random(-2, 2); // Random initial horizontal speed
-  speedY = random(-2, 2); // Random initial vertical speed
+  speedX = random(-20, 20); // Random initial horizontal speed
+  speedY = random(-20, 20); // Random initial vertical speed
 }
 
 function draw() {
