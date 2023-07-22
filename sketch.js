@@ -12,18 +12,6 @@ function setup() {
 function draw() {
   background(0); // Black background
   
-  // Draw a thick line at the middle position above the grid
-  let middleY = height / 2;
-  stroke(255); // White color
-  strokeWeight(10); // Thick stroke
-  line(0, middleY, width, middleY);
-  
-  // Calculate the offset for the moving grid
-  yOffset += speed;
-  if (yOffset >= gridSize) {
-    yOffset = 0;
-  }
-  
   // Draw the grid in the lower half of the window
   for (let y = 0; y < numRows; y++) {
     for (let x = 0; x < numCols; x++) {
@@ -45,7 +33,20 @@ function draw() {
       let c = lerpColor(color1, color2, inter);
       stroke(c);
       noFill();
+      strokeWeight(1); // Smaller stroke weight for grid lines
       rect(x1, y1, x2 - x1, y2 - y1);
     }
+  }
+  
+  // Draw a thick line at the middle position above the grid
+  let middleY = height / 2;
+  stroke(255); // White color
+  strokeWeight(10); // Thick stroke
+  line(0, middleY, width, middleY);
+  
+  // Calculate the offset for the moving grid
+  yOffset += speed;
+  if (yOffset >= gridSize) {
+    yOffset = 0;
   }
 }
