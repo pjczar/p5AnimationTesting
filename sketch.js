@@ -24,14 +24,14 @@ function setup() {
 }
 
 function draw() {
-  background(0, 200, 0); // Set the background to bright green
+  background(0); // Set the background to black
   noStroke();
 
   // Draw the grid cells
   for (let y = 0; y < numRows; y++) {
     for (let x = 0; x < numCols; x++) {
-      // Set the color for the cell (bright green)
-      let cellColor = color(0, 255, 0);
+      // Set the color for the cell (black)
+      let cellColor = color(0);
       // If the entire column is currently changing characters, make it white
       if (columnsChanging[x]) {
         cellColor = color(255);
@@ -40,7 +40,12 @@ function draw() {
       // Draw the cell rectangle
       rect(x * cellSize, y * cellSize, cellSize, cellSize);
       // Draw the character in the cell
-      fill(0, 255, 0); // Set the character color to bright green
+      let textColor = color(0, 255, 0); // Set the character color to green
+      if (columnsChanging[x] || dist(mouseX, mouseY, x * cellSize + cellSize / 2, y * cellSize + cellSize / 2) < 60) {
+        // If the column is changing or the mouse is within 60 pixels, set the text color to white
+        textColor = color(255);
+      }
+      fill(textColor);
       textSize(24);
       textAlign(CENTER, CENTER);
       text(grid[y][x], x * cellSize + cellSize / 2, y * cellSize + cellSize / 2);
@@ -69,8 +74,12 @@ function mouseMoved() {
     for (let x = 0; x < numCols; x++) {
       let distance = dist(mouseX, mouseY, x * cellSize + cellSize / 2, y * cellSize + cellSize / 2);
       // Calculate the new color based on the distance from the mouse cursor
-      let newColor = color(255 - distance, 255, 255 - distance);
-      fill(newColor);
+      let textColor = color(0, 255, 0); // Set the character color to green
+      if (columnsChanging[x] || distance < 60) {
+        // If the column is changing or the mouse is within 60 pixels, set the text color to white
+        textColor = color(255);
+      }
+      fill(textColor);
       text(grid[y][x], x * cellSize + cellSize / 2, y * cellSize + cellSize / 2);
     }
   }
