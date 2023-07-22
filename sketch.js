@@ -36,8 +36,8 @@ function draw() {
       let d = dist(mouseX, mouseY, cell.xPos + cellSize / 2, cell.yPos + cellSize / 2);
 
       // Calculate the color based on mouse distance
-      let fromColor = color(0, 255, 0); // Green
-      let toColor = color(255); // White
+      let fromColor = color(255); // White
+      let toColor = color(0, 255, 0); // Green
       let cellColor = lerpColor(fromColor, toColor, map(d, 0, 60, 0, 1));
 
       // Change character based on mouse distance
@@ -72,6 +72,7 @@ function draw() {
     }
   }
 }
+
 
 
 function getRandomCharacter() {
