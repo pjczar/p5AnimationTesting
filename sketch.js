@@ -1,13 +1,22 @@
 let gridSize = 20; // Size of each grid cell
 let numCols, numRows; // Number of columns and rows in the grid
 let yOffset = 0; // Y offset for the moving grid
-let speed = 0.2; // Speed of the moving grid
+let speed = 0.1; // Speed of the moving grid
+let grid = []; // 2D array to store characters in each cell
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   numCols = ceil(width / gridSize) + 1;
   numRows = ceil(height / gridSize / 2) + 1;
-  colorMode(HSB, 100); // Use HSB color mode for bright and saturated green
+  colorMode(HSB, 100); // Use HSB color mode for bright and saturated colors
+
+  // Initialize the grid with random characters
+  for (let y = 0; y < numRows; y++) {
+    grid[y] = [];
+    for (let x = 0; x < numCols; x++) {
+      grid[y][x] = getRandomCharacter();
+    }
+  }
 }
 
 function draw() {
@@ -19,17 +28,6 @@ function draw() {
     for (let x = 0; x < numCols; x++) {
       let x1 = x * gridSize - gridSize / 2;
       let y1 = y * gridSize + yOffset + height / 2;
-      let x2 = x * gridSize + gridSize / 2;
-      let y2 = y * gridSize + yOffset + gridSize + height / 2;
-      
-      // Apply perspective to vertical lines at the bottom
-      if (y === numRows - 1) {
-        x1 -= (numCols / 2 - x) * 5; // Adjust the multiplier for different proportions
-        x2 += (numCols / 2 - x) * 5; // Adjust the multiplier for different proportions
-      }
-      
-      // Random alphanumeric character for each cell
-      let character = getRandomCharacter();
       
       // Fill the cell with bright green
       fill(80, 100, 100);
@@ -42,10 +40,10 @@ function draw() {
       translate(-shadowOffset, -shadowOffset); // Reset translation
       
       // Draw the alphanumeric character in the cell
-      fill(0); // Black text color
+      fill(0, 100, 100); // Bright green text color
       textSize(12);
       textAlign(CENTER, CENTER);
-      text(character, x1 + cellSize / 2, y1 + cellSize / 2);
+      text(grid[y][x], x1 + cellSize / 2, y1 + cellSize / 2);
     }
   }
   
@@ -53,6 +51,15 @@ function draw() {
   yOffset += speed;
   if (yOffset >= gridSize) {
     yOffset = 0;
+    // Shift the characters in the grid when a new line appears at the top
+    for (let y = numRows - 1; y > 0; y--) {
+      grid[y] = grid[y - 1].slice();
+    }
+    // Generate a new line of characters at the top
+    grid[0] = [];
+    for (let x = 0; x < numCols; x++) {
+      grid[0][x] = getRandomCharacter();
+    }
   }
 }
 
