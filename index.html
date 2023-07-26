@@ -1,14 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P5.js SVG Animation</title>
-  <!-- Include the p5.js library -->
+  <title>Cyberpunk City Horizon - Parallax</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <!-- Include your p5.js sketch file -->
-  <script src="sketch.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    .content {
+      height: 3000px; /* Set a large height to create scrollable area */
+    }
+  </style>
 </head>
 <body>
+  <div class="content">
+    <script>
+      let cityLights = [];
+      let numCityLights = 100;
+      let yOffset = 0; // Y offset for parallax effect
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        generateCity();
+      }
+
+      function draw() {
+        background(0);
+        yOffset = -scrollY * 0.3; // Adjust the parallax effect speed
+
+        drawCity();
+      }
+
+      function generateCity() {
+        for (let i = 0; i < numCityLights; i++) {
+          let x = random(width);
+          let y = random(height * 0.7, height); // City lights are below 70% of the canvas
+          let heightFactor = random(0.2, 1); // Controls the height of the building
+
+          cityLights.push({ x, y, heightFactor });
+        }
+      }
+
+      function drawCity() {
+        fill(255, 150);
+        noStroke();
+
+        for (let light of cityLights) {
+          let { x, y, heightFactor } = light;
+
+          let buildingHeight = height * heightFactor;
+          rect(x, y + yOffset - buildingHeight, 10, buildingHeight);
+        }
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+  </div>
 </body>
 </html>
