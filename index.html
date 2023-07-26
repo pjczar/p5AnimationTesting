@@ -1,63 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Cyberpunk City Horizon - Parallax</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-    .content {
-      height: 3000px; /* Set a large height to create scrollable area */
-    }
-  </style>
+    <title>Cyberpunk Parallax Background</title>
+    <style>
+        /* Add your CSS styles here */
+        /* For example, you can style the text */
+        .cyberpunk-text {
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
-  <div class="content">
+    <!-- Cyberpunk Parallax Background Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Your Existing Content -->
+    <div class="cyberpunk-text">
+        <p>Cyberpunk, a captivating and imaginative genre, delves into a future world where advanced technology intertwines with the gritty realities of urban life. Set in a dystopian and often dark near-future, cyberpunk stories paint a vivid picture of a society dominated by powerful corporations, rapid technological advancements, and an ever-widening gap between the rich and the marginalized. Neon-lit cityscapes, towering megacorporation skyscrapers, and bustling streets filled with augmented humans and advanced AI become the backdrop for these tales of rebellion, hacking, and cyber-enhanced individuals.</p>
+        <p>At the core of the cyberpunk genre lies a subversive spirit, challenging the traditional notions of power and control. Hackers, known as 'netrunners,' manipulate digital realities to expose corporate secrets and subvert oppressive systems. The genre often explores the moral and ethical dilemmas surrounding the fusion of humans with machines, blurring the line between humanity and technology. Themes of individuality, identity, and the consequences of unchecked technological progress resonate throughout cyberpunk narratives, making it a thought-provoking and thrilling genre that continues to captivate audiences.</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-      let cityLights = [];
-      let numCityLights = 100;
-      let yOffset = 0; // Y offset for parallax effect
+        let buildings = [];
+        let numBuildings = 30;
 
-      function setup() {
-        createCanvas(windowWidth, windowHeight);
-        generateCity();
-      }
-
-      function draw() {
-        background(0);
-        yOffset = -scrollY * 0.3; // Adjust the parallax effect speed
-
-        drawCity();
-      }
-
-      function generateCity() {
-        for (let i = 0; i < numCityLights; i++) {
-          let x = random(width);
-          let y = random(height * 0.7, height); // City lights are below 70% of the canvas
-          let heightFactor = random(0.2, 1); // Controls the height of the building
-
-          cityLights.push({ x, y, heightFactor });
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            generateBuildings();
         }
-      }
 
-      function drawCity() {
-        fill(255, 150);
-        noStroke();
+        function draw() {
+            background(0);
 
-        for (let light of cityLights) {
-          let { x, y, heightFactor } = light;
-
-          let buildingHeight = height * heightFactor;
-          rect(x, y + yOffset - buildingHeight, 10, buildingHeight);
+            for (let i = 0; i < buildings.length; i++) {
+                buildings[i].draw();
+                buildings[i].update();
+            }
         }
-      }
 
-      function windowResized() {
-        resizeCanvas(windowWidth, windowHeight);
-      }
+        function generateBuildings() {
+            for (let i = 0; i < numBuildings; i++) {
+                buildings.push(new Building(random(width), random(height / 2, height), random(50, 300), random(100, 400)));
+            }
+        }
+
+        class Building {
+            constructor(x, y, width, height) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.velocity = random(0.5, 2);
+            }
+
+            draw() {
+                fill(100);
+                noStroke();
+                rect(this.x, this.y, this.width, this.height);
+            }
+
+            update() {
+                this.x -= this.velocity;
+
+                if (this.x + this.width < 0) {
+                    this.x = width + this.width;
+                    this.y = random(height / 2, height);
+                    this.width = random(50, 300);
+                    this.height = random(100, 400);
+                    this.velocity = random(0.5, 2);
+                }
+            }
+        }
     </script>
-  </div>
 </body>
 </html>
